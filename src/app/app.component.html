@@ -1,0 +1,33 @@
+<div class="header">
+  <h1>Cotação do Dólar</h1>
+</div>
+
+<div class="dolarAtual">
+  <h2> {{cotacaoAtual}} </h2>
+</div>
+
+<div class="buscarPorPeriodo">
+  Histórico de cotações
+  <label for="dataInicial">Data inicial:</label>
+  <input id="dataInicial" type="date" name="dataInicial" #dataInicial>
+  <label for="dataFinal">Data final:</label>
+  <input id="dataFinal" type="date" name="dataFinal" #dataFinal>
+  <button type="submit" class="btnPesquisar" (click)="getCotacaoPorPeriodo(dataInicial.value, dataFinal.value)" > Pesquisar </button>
+</div>
+
+<div>
+  <p class="errorAlert"> {{errosAlert}} </p>
+</div>
+<div>
+  <button>Ordenar por diferença</button>
+  <button>Ordenar por data</button>
+</div>
+<div>
+  <ul *ngFor="let item of cotacaoPorPeriodoLista">
+    <li class="listaHistoricoCotacoesItem">
+      <span class="historicoDeCotacoesItemInfo"> {{item.data}}-{{item.hora}}  </span>
+      <span class="historicoDeCotacoesItemInfo"> {{item.preco}} </span>
+      <span class="historicoDeCotacoesItemInfo"> {{(item.diferenca)}} </span>
+    </li>
+  </ul>
+</div>
