@@ -10,8 +10,7 @@ import { CotacaoDolarService } from './cotacaodolar.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  errosAlert: String = '';
-  cotacaoAtual: string = 'Aguardando servidor...';
+  cotacaoAtual = 0;
   cotacaoPorPeriodoLista: Cotacao[] = [];
 
   constructor(
@@ -19,56 +18,27 @@ export class AppComponent implements OnInit {
     private dateFormat: DatePipe
   ) {}
 
-  public getCotacaoAtualeData(): void {
-    this.cotacaoDolarService.getCotacaoAtualeData().subscribe(
-      (response: String) => {
-        this.errosAlert = '';
-        this.cotacaoAtual = response.toString();
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-        this.errosAlert = 'Ocorreu um erro: ' + error.message;
-      }
-    );
-  }
-
   public getCotacaoPorPeriodo(
     dataInicialString: string,
     dataFinalString: string
   ): void {
-    this.errosAlert = '';
     this.cotacaoPorPeriodoLista = [];
 
-    let dataInicial: Date = new Date(dataInicialString);
+    let dataInicial: any = new Date(dataInicialString);
     dataInicial.setDate(dataInicial.getDate() + 1);
-    let dataFinal: Date = new Date(dataFinalString);
+    dataInicial = this.dateFormat.transform(dataInicial, "MM-dd-yyyy");
+    let dataFinal: any = new Date(dataFinalString);
     dataFinal.setDate(dataFinal.getDate() + 1);
+    dataFinal = this.dateFormat.transform(dataFinal, "MM-dd-yyyy");
 
-    // complete aqui....
-  }
-
-  private getCotacaoDiferenca() {
-    this.cotacaoDolarService.getCotacaoAtual().subscribe(
-      (response: number) => {
-        let formaterToMoney = new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        });
-        this.cotacaoPorPeriodoLista.forEach((value) => {
-          value.dataTexto
-            ? this.dateFormat.transform(value.data, 'dd-MM-yyyy')
-            : '';
-          value.precoTexto = formaterToMoney.format(value.preco);
-          value.diferenca = formaterToMoney.format(response - value.preco);
-        });
-      },
-      (error: HttpErrorResponse) => {
-        this.errosAlert = 'Ocorreu um erro: ' + error.message;
-      }
-    );
+    this.cotacaoDolarService.getCotacaoPorPeriodoFront(dataInicial.toString(), dataFinal.toString()).subscribe(cotacoes => {
+      this.cotacaoPorPeriodoLista = cotacoes;
+    })
   }
 
   ngOnInit() {
-    this.getCotacaoAtualeData();
+    this.cotacaoDolarService.getCotacaoAtual().subscribe(cotacao => {
+      this.cotacaoAtual = cotacao;
+    })
   }
 }

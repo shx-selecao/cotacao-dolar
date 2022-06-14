@@ -11,26 +11,11 @@ export class CotacaoDolarService {
 
   constructor(private http: HttpClient) {}
 
-  public getCotacaoAtualeData(): Observable<String> {
-    return this.http
-      .get<any>(`https://economia.awesomeapi.com.br/last/USD-BRL`)
-      .pipe(
-        map((moeda) => {
-          // complete aqui...
-          return '';
-        })
-      );
-  }
-
   public getCotacaoAtual(): Observable<number> {
-    return this.http
-      .get<any>(`https://economia.awesomeapi.com.br/last/USD-BRL`)
-      .pipe(
-        map((moeda) => {
-          // complete aqui...
-          return 0;
-        })
-      );
+    return this.http.get<any>(`https://economia.awesomeapi.com.br/last/USD-BRL`).pipe(map(moeda => {
+      let moedaReturn = moeda.USDBRL.bid
+      return moedaReturn;
+    }))
   }
 
   public getCotacaoPorPeriodoFront(
